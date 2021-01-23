@@ -1,0 +1,128 @@
+{
+	"info": {
+		"_postman_id": "ec02578b-9dda-4881-9718-6cc5732b2ff6",
+		"name": "Anyoint Runtime Manager API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Anypoint Login API - Bearer Token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"Anypoint_Username\",\r\n    \"password\": \"Anypoint_Password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/accounts/login",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"accounts",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Server Details - Hybrid",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer 02404578-9a41-4500-8af3-4b66c3dbf682"
+					},
+					{
+						"key": "X-ANYPNT-ENV-ID",
+						"value": "",
+						"type": "text"
+					},
+					{
+						"key": "X-ANYPNT-ORG-ID",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/hybrid/api/v1/servers",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"hybrid",
+						"api",
+						"v1",
+						"servers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Server Restart - Hybrid",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer 02404578-9a41-4500-8af3-4b66c3dbf682"
+					},
+					{
+						"key": "X-ANYPNT-ENV-ID",
+						"type": "text",
+						"value": ""
+					},
+					{
+						"key": "X-ANYPNT-ORG-ID",
+						"type": "text",
+						"value": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"actionType\": \"RESTART\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/hybrid/api/v1/servers/5875129/actions",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"hybrid",
+						"api",
+						"v1",
+						"servers",
+						"5875129",
+						"actions"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,118 @@
+{
+	"info": {
+		"_postman_id": "02f62f83-c03d-4d14-aa58-7da1379c2171",
+		"name": "Anypoint API Manager API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Anypoint Login API - Bearer Token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"Anypoint_Username\",\r\n    \"password\": \"Anypoint_Password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/accounts/login",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"accounts",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Apply API Manager Policy - JWT Validation Policy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer 02404578-9a41-4500-8af3-4b66c3dbf682",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"configurationData\":{\r\n     \"jwtOrigin\":\"httpBearerAuthenticationHeader\",\r\n     \"jwtExpression\":\"#[attributes.headers['jwt']]\",\r\n     \"signingMethod\":\"rsa\",\r\n     \"signingKeyLength\":\"256\",\r\n     \"jwtKeyOrigin\":\"jwks\",\r\n     \"textKey\":\"Text Data\",\r\n     \"jwksUrl\":\"https://example.okta.com/oauth2/default/v1/keys\",\r\n     \"jwksServiceTimeToLive\":60,\r\n     \"skipClientIdValidation\":true,\r\n     \"clientIdExpression\":\"#[vars.claimSet.client_id]\",\r\n     \"validateAudClaim\":false,\r\n     \"mandatoryAudClaim\":false,\r\n     \"supportedAudiences\":\"aud.example.com\",\r\n     \"mandatoryExpClaim\":false,\r\n     \"mandatoryNbfClaim\":false,\r\n     \"validateCustomClaim\":true,\r\n     \"mandatoryCustomClaims\":[{\"key\":\"scope\",\"value\":\"#[vars.claimSet.scope='API_READ']\"}]\r\n     },\r\n   \"policyTemplateId\":\"jwt-validation\",\r\n   \"assetId\":\"jwt-validation\",\r\n   \"assetVersion\":\"1.1.2\",\r\n   \"groupId\":\"68ef9520-24e9-4cf2-b2f5-620025690913\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/apimanager/api/v1/organizations/{orgId}/environments/{envID}/apis/{apiInstaneId}/policies",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"apimanager",
+						"api",
+						"v1",
+						"organizations",
+						"{orgId}",
+						"environments",
+						"{envID}",
+						"apis",
+						"{apiInstaneId}",
+						"policies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve API Policies Details",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer 02404578-9a41-4500-8af3-4b66c3dbf682",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/apimanager/api/v1/organizations/{orgId}/environments/{envID}/apis/{apiInstaneId}/policies",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"apimanager",
+						"api",
+						"v1",
+						"organizations",
+						"{orgId}",
+						"environments",
+						"{envID}",
+						"apis",
+						"{apiInstaneId}",
+						"policies"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

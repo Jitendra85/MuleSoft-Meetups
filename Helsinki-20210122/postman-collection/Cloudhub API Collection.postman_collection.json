@@ -1,0 +1,111 @@
+{
+	"info": {
+		"_postman_id": "9c8b02f5-327a-44ab-99c4-2bd0d15ba2e7",
+		"name": "Cloudhub API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Retrieve Application Information",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "CSoft@12354",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "jacky85",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-ANYPNT-ENV-ID",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/cloudhub/api/applications?retrieveStatistics=false&period=3600000&intervalCount=50",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"cloudhub",
+						"api",
+						"applications"
+					],
+					"query": [
+						{
+							"key": "retrieveStatistics",
+							"value": "false"
+						},
+						{
+							"key": "period",
+							"value": "3600000"
+						},
+						{
+							"key": "intervalCount",
+							"value": "50"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Application Worker Details",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "CSoft@12354",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "jacky85",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-ANYPNT-ENV-ID",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/cloudhub/api/applications/world-timezone-api-proxy/workers",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"cloudhub",
+						"api",
+						"applications",
+						"world-timezone-api-proxy",
+						"workers"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

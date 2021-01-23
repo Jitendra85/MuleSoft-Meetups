@@ -1,0 +1,6 @@
+runtime-mgr cloudhub-application describe "world-timezone-api-proxy"
+runtime-mgr cloudhub-application restart "world-timezone-api-proxy"
+runtime-mgr cloudhub-application download-logs "world-timezone-api-proxy" "C:\Users\Desktop\Helsinki Meetup\logs"
+
+exchange asset list
+designcenter project list
