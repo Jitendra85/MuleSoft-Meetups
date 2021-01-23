@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<error-handler name="error-handling-common-utilityError_Handler" doc:id="a807b9db-eb1f-4943-aad7-c6dad68d0504" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="fc869c2c-ceb4-456b-b4fe-1cecbed40e9a" type="HTTP:BAD_REQUEST">
+			<set-variable value="400" doc:name="Set Variable" doc:id="6191c3ed-1757-46f7-84c4-a1747a21ea6b" variableName="httpStatusCode"/>
+			<flow-ref doc:name="Flow Reference" doc:id="a8ce2e9e-80a8-44e0-a8d1-2cedae4f6026" name="error-handling-common-utilitySub_Flow"/>
+		</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ad29a1d6-0b78-44d5-9b0e-6b5aa45e854b" type="HTTP:CONNECTIVITY">
+			<set-variable value="500" doc:name="Set Variable" doc:id="6152d7ed-87c7-41b2-9775-c82e510ef727" variableName="httpStatusCode"/>
+			<flow-ref doc:name="Flow Reference" doc:id="7c491060-0b32-44a5-8017-b2df4671a83d" name="error-handling-common-utilitySub_Flow" />
+		
+</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="cc1b4033-b176-4d34-87b3-0cbbd1a83146" type="HTTP:INTERNAL_SERVER_ERROR">
+			<set-variable value="500" doc:name="Set Variable" doc:id="5a53d0ba-b1ae-4064-9ee0-33cef5ac674c" variableName="httpStatusCode"/>
+			<flow-ref doc:name="Copy_of_Flow Reference" doc:id="b2dc7263-4496-4d3a-bbd5-a5181acc46d7" name="error-handling-common-utilitySub_Flow" />
+		
+</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b820feff-a2f8-49d0-93a7-72c6aa3cac1d" type="HTTP:NOT_FOUND">
+			<set-variable value="404" doc:name="Set Variable" doc:id="cfb2e8a1-7b84-4bcc-a10d-974937b727d6" variableName="httpStatusCode"/>
+			<flow-ref doc:name="Copy_of_Flow Reference" doc:id="f47d3960-e396-4cc0-89c8-7e5cea6a2901" name="error-handling-common-utilitySub_Flow" />
+		
+</on-error-propagate>	
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="0d4fc5c0-9737-42fa-a0dd-ce3037faab26" type="HTTP:UNAUTHORIZED">
+			<set-variable value="401" doc:name="Set Variable" doc:id="d9f6c6ed-abf0-438f-9beb-36782006ac1e" variableName="httpStatusCode"/>
+			<flow-ref doc:name="Copy_of_Flow Reference" doc:id="2a3678c3-2ca9-426a-a65d-b9b7444baf2c" name="error-handling-common-utilitySub_Flow" />
+		
+</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="5f816c81-5660-46ab-b2c9-34f66b9bdbbf" type="HTTP:UNSUPPORTED_MEDIA_TYPE">
+			<set-variable value="415" doc:name="Set Variable" doc:id="56b9677c-7b93-45cb-8393-575ab8b1ea4d" variableName="httpStatusCode"/>
+			<flow-ref doc:name="Copy_of_Flow Reference" doc:id="fb326c1d-afe0-4347-afe6-eea26617be63" name="error-handling-common-utilitySub_Flow" />
+		
+</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b4b99212-21d6-49ed-93e9-5e298700a7d0" type="JMS:DESTINATION_NOT_FOUND">
+			<set-variable value="404" doc:name="Set Variable" doc:id="a927f03a-774a-4888-a876-9cb821a005c0" variableName="httpStatusCode"/>
+			<flow-ref doc:name="Copy_of_Flow Reference" doc:id="2cdd8c52-f349-4fc7-a6d7-16d2154fcbe8" name="error-handling-common-utilitySub_Flow" />
+		
+</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b3a61ccb-c21d-485e-988f-56f1b9d5204e" type="ANY">
+			<set-variable value="500" doc:name="Set Variable" doc:id="98cc478f-b20e-4376-afbe-532ece07f013" variableName="httpStatusCode"/>
+			<flow-ref doc:name="Copy_of_Flow Reference" doc:id="1f6cd05c-736a-4718-a9db-f5d3029bb3f7" name="error-handling-common-utilitySub_Flow" />
+		
+</on-error-propagate>
+	</error-handler>
+	<sub-flow name="error-handling-common-utilitySub_Flow" doc:id="7b6d05e1-bcd6-4850-a002-536647e73589" >
+		<ee:transform doc:name="Transform Message" doc:id="cb8b36dc-40ec-4883-8fc0-610bcea49269" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	error:error.description,
+	errorType:error.errorType,
+	httpStatusCode:vars.httpStatusCode default 500
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="b22ba0cd-80a5-4199-a46c-33bd470c2d13" message="#[payload]"/>
+	</sub-flow>
+</mule>
