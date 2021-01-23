@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:http-policy="http://www.mulesoft.org/schema/mule/http-policy"
+      xmlns:http-transform="http://www.mulesoft.org/schema/mule/http-policy-transform"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+               http://www.mulesoft.org/schema/mule/http-policy http://www.mulesoft.org/schema/mule/http-policy/current/mule-http-policy.xsd
+               http://www.mulesoft.org/schema/mule/http-policy-transform http://www.mulesoft.org/schema/mule/http-policy-transform/current/mule-http-policy-transform.xsd">
+
+
+    <http-policy:proxy name="{{{policyId}}}-custom-policy">
+    
+        <http-policy:source>
+        
+        {{#each logExpression}}
+        <logger level="INFO" doc:name="Logger" doc:id="e14d67ab-2dc3-43bd-bab4-563845feee13" message="{{{this.key}}}:{{{this.value}}}"/>
+        {{/each}} 
+        {{#if requestPayload}}
+        <logger level="INFO" doc:name="Logger" doc:id="7c9c4753-9968-4079-bfe1-93d85f781725" message="#[payload]"/>
+        {{/if}}
+        
+        {{#each inboundHeaders}}
+        <logger level="INFO" doc:name="Logger" doc:id="608b7d00-e77a-492c-9df9-93c65eadc773" message="{{{this.key}}}:{{{this.value}}}"/>
+        {{/each}}
+		<http-policy:execute-next/>  
+        {{#if responsePayload}}
+        <logger level="INFO" doc:name="Logger" doc:id="c2a046dc-74a6-427c-9e66-a57ed5694062" message="#[payload]"/>
+        {{/if}}
+        
+       {{#each outboundHeaders}}
+        <logger level="INFO" doc:name="Logger" doc:id="90c61c07-18d6-46f7-ad83-2f6c1b1b0f95" message="{{{this.key}}}:{{{this.value}}}"/>
+        {{/each}}
+
+        </http-policy:source>
+    </http-policy:proxy>
+</mule>

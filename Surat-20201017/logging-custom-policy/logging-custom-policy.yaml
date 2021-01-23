@@ -1,0 +1,55 @@
+id: mule-logging-policy
+name: mule-logging-policy
+description: Logging Policy
+category: Custom
+type: custom
+resourceLevelSupported: true
+encryptionSupported: false
+standalone: true
+requiredCharacteristics: []
+providedCharacteristics: []
+configuration:
+  - propertyName: requestPayload
+    name: Request Payload
+    description: Log Request Payload
+    type: boolean
+    allowMultiple: false
+    defaultValue: false
+    optional: true
+    sensitive: false
+
+  - propertyName: responsePayload
+    name: Response Payload
+    description: Log Response Payload
+    type: boolean
+    allowMultiple: false
+    defaultValue: false
+    optional: true
+    sensitive: false
+ 
+  - propertyName: logExpression
+    name: Log Expression
+    description: Log  Payload
+    type: keyvalues
+    allowMultiple: true
+    defaultValue: false
+    optional: true
+    sensitive: false
+ 
+  - propertyName: inboundHeaders
+    name: Inbound Headers
+    description: Inboud Headers
+    type: keyvalues
+    allowMultiple: true
+    defaultValue: false
+    optional: true
+    sensitive: false
+    
+  - propertyName: outboundHeaders
+    name: Outbound Headers
+    description: Outbound Headers
+    type: keyvalues
+    allowMultiple: true
+    defaultValue: false
+    optional: true
+    sensitive: false
