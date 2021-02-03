@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="JWT Smart Connector" prefix="module-jwt-connector"
+	doc:description="This module relies in runtime provided components"
+
+	xmlns="http://www.mulesoft.org/schema/mule/module"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mule="http://www.mulesoft.org/schema/mule/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+         http://www.mulesoft.org/schema/mule/module http://www.mulesoft.org/schema/mule/module/current/mule-module.xsd
+           http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+           http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+           http://www.mulesoft.org/schema/mule/module http://www.mulesoft.org/schema/mule/module/current/mule-module.xsd
+           http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<property name="clientId" type="string"
+		doc:description="Client Id" />
+	<property name="clientSecret" type="string"
+		doc:description="Client Secret" />
+	<property name="tokenUrl" type="string"
+		doc:description="Token Url" />
+	<http:request-config name="jwt-http-config">
+		<http:request-connection>
+			<http:authentication>
+				<http:basic-authentication
+					username="#[vars.clientId]" password="#[vars.clientSecret]" />
+			</http:authentication>
+		</http:request-connection>
+	</http:request-config>
+	<operation name="Generate-Jwt-Token-Client-Credentials"
+		doc:description="Generate Bearer Token Using Client Credentials">
+		<parameters>
+			<parameter name="scope" type="string" />
+			<parameter name="state" type="string" />
+			<parameter name="content-type" type="string" />
+			<parameter name="grant-type" type="string" />
+		</parameters>
+		<body>
+			<http:request method="POST" url="#[vars.tokenUrl]"
+				config-ref="jwt-http-config">
+				<http:headers><![CDATA[#[{
+	"Content-Type": vars.'content-type'
+}]]]></http:headers>
+
+				<http:query-params><![CDATA[#[{
+	scope: vars.scope,
+	state:vars.state,
+	grant_type:vars.'grant-type' default 'client_credentials'
+	
+}]]]></http:query-params>
+			</http:request>
+		</body>
+		<output type="string" doc:description="Payload's output" />
+	</operation>
+
+
+	<operation name="Generate-JWT-Token-Password"
+		doc:description="Generate Bearer Token Using Password">
+		<parameters>
+			<parameter name="username" type="string" />
+			<parameter name="password" password="true" type="string" />
+			<parameter name="scope" type="string" />
+			<parameter name="state" type="string" />
+			<parameter name="content-type" type="string" />
+			<parameter name="grant-type" type="string" />
+		</parameters>
+		<body>
+			<http:request method="POST" url="#[vars.tokenUrl]"
+				config-ref="jwt-http-config">
+				<http:headers><![CDATA[#[{
+	"Content-Type": vars.'content-type'
+}]]]></http:headers>
+
+				<http:query-params><![CDATA[#[{
+	scope: vars.scope,
+	state:vars.state,
+	grant_type:vars.'grant-type' default 'password',
+	username: vars.username,
+	password: vars.password
+	
+}]]]></http:query-params>
+			</http:request>
+		</body>
+		<output type="string" doc:description="Payload's output" />
+	</operation>
+</module>
