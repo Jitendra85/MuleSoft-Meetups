@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+    
+    environment {
+       muleRuntime = '4.3.0'
+       appName_dev = 'multibranch-example-dev'
+       appName_prod = 'multibranch-example-prod'
+       worker_dev = '1'
+       workerType_dev = 'MICRO'
+       worker_prod = '1'
+       workerType_prod = 'MICRO'
+       region ='us-east-1'
+       server = 'Anypoint'
+       environment_prod = 'Production'
+       environment_dev = 'Production'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+            echo "${server}"
+                bat 'mvn clean install -DskipTests'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy To Development Server') {
+        when {
+                branch 'dev' 
+            }
+            steps {
+            
+		configFileProvider([configFile(fileId: '142716ed-76ce-4221-8d76-475531b40b9e', variable: 'MAVEN_GLOBAL_SETTINGS')]) {
+               bat "mvn -gs ${MAVEN_GLOBAL_SETTINGS} deploy -DmuleDeploy -Dserver=${server} -Dregion=${region} -Denvironment=${environment_dev} -Dworkers=${worker_dev} -DworkerType=${workerType_dev} -Dapp.runtime=${muleRuntime} -DappName=${appName_dev}"
+            }}
+        }
+        
+        stage('Deploy To Prod Server') {
+         when {
+                branch 'main' 
+            }
+            steps {
+           
+		configFileProvider([configFile(fileId: '142716ed-76ce-4221-8d76-475531b40b9e', variable: 'MAVEN_GLOBAL_SETTINGS')]) 
+		{
+                bat  "mvn -gs ${MAVEN_GLOBAL_SETTINGS} deploy -DmuleDeploy -Dserver=${server} -Dregion=${region} -Denvironment=${environment_prod} -Dworkers=${worker_prod} -DworkerType=${workerType_prod} -Dapp.runtime=${muleRuntime} -DappName=${appName_prod}"
+        }
+        }
+        }
+    }
+}
