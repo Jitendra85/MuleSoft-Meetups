@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="37e2b222-3005-4ce7-a126-2133b0b64595" basePath="${http.basepath}">
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="c3c34c81-f844-4c3a-b67e-80bc3175b4a2" file="properties\config_${env}.properties" />
+	<flow name="paymentFlow" doc:id="fd7b9583-6349-474e-bfbe-e600d4bc891f" >
+		<http:listener doc:name="Listener" doc:id="c2a92604-14c3-485b-aff4-53e15a2a1572" config-ref="HTTP_Listener_config" path="/payment"/>
+		<choice doc:name="Choice" doc:id="079b365f-97ea-4910-88ca-22d2139541a0" >
+			<when expression="#[p('execution-flag')]">
+				<logger level="INFO" doc:name="Logger" doc:id="c38a55e6-9086-42f9-b53e-110ea3db18a5" message="Payment processed successfully." />
+				<ee:transform doc:name="Transform Message" doc:id="c77f75e5-df06-4726-819d-12030107287f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "success": true,
+    "message": "Payment processed successfully."
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="d8401622-a74a-436d-a153-2e5bf66e1e75" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "success": false,
+    "message": "Payment process failed."
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="cancelPaymentFlow" doc:id="b311712d-5ec4-4f54-b669-a6e2669b380c" >
+		<http:listener doc:name="Listener" doc:id="6425c81f-544b-4a5b-b69f-178713429315" config-ref="HTTP_Listener_config" path="/cancelPayment"/>
+		<logger level="INFO" doc:name="Logger" doc:id="7ded793e-260b-489f-b5ac-8b40513d5513" message="Payment amount refunded" />
+		<ee:transform doc:name="Transform Message" doc:id="07b3b73a-21f8-4f54-bafa-56ff08ab4080">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "success": true,
+     "message": "Payment amount refunded."
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

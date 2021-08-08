@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a85563b3-f7b6-4469-bf4b-9e2def9a7bcc" basePath="${http.basepath}">
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="f2847a82-7f6c-4378-8222-64086e4112fe" file="properties\config_${env}.properties" />
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="12f0796d-99f2-4c29-aa8f-f553690bd52c" >
+		<db:generic-connection url="jdbc:h2:file:./sql Db/h2Test" driverClassName="org.h2.Driver" />
+	</db:config>
+	<flow name="createTableFlow" doc:id="d5ef618e-e700-4c46-b22c-31ec2f84155e" >
+		<http:listener doc:name="Listener" doc:id="29d9c2a5-0f32-47ed-9d6c-a8e8b64eca4e" config-ref="HTTP_Listener_config" path="/createTable"/>
+		<db:execute-ddl doc:name="Execute DDL" doc:id="165e9f34-5f3d-47e9-bc83-9cac4284e6f4" config-ref="Database_Config">
+			<db:sql><![CDATA[CREATE TABLE orders (
+	orderId int,
+	orderName varchar(30)
+)]]></db:sql>
+		</db:execute-ddl>
+		<ee:transform doc:name="Transform Message" doc:id="e0d3f89e-5069-4dd2-97be-ceebe6ff28e9">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="createOrderFlow" doc:id="c1c182b6-0a7c-40a8-81ed-a70b6ba524b9" >
+		<http:listener doc:name="Listener" doc:id="e172583d-cab1-4aa6-ba25-54a084fbfb48" path="/createOrder" config-ref="HTTP_Listener_config"/>
+		<choice doc:name="Choice" doc:id="18994743-eecd-4f5b-b323-e76a272fa42f" >
+			<when expression="#[p('execution-flag')]">
+				<db:insert doc:name="Insert" doc:id="dee8da8c-fc8c-4bfc-9212-6abbb73aa50d" config-ref="Database_Config">
+			<db:sql><![CDATA[insert into orders values (:orderId,:orderName)]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	orderId: payload.orderId,
+	orderName: payload.orderName
+}]]]></db:input-parameters>
+		</db:insert>
+				<ee:transform doc:name="Transform Message" doc:id="d28fbce6-6df7-44b9-bef3-bbd9d068a2da">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	success: true,
+	message: "Order created successfully"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="35b3f67b-3a8f-4aeb-99ac-2e0c63cc94c9" message="#[payload]" />
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="28db14b3-5212-4d16-924f-9c1806e602f3" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	success: false,
+	message: "Order creation failed"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="53378f6b-c39c-4f3c-b54a-3219f3cf673c" message="#[payload]"/>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="deleteOrderFlow" doc:id="b224ff63-c569-4848-86dc-e3c1b7105ccd" >
+		<http:listener doc:name="Listener" doc:id="f045810c-6de3-4c17-9f29-e78bf32d1d2e" path="/deleteOrder" config-ref="HTTP_Listener_config"/>
+		<db:delete doc:name="Delete" doc:id="80dc3bf5-a09e-4f78-80fe-98064d37e060" config-ref="Database_Config">
+			<db:sql><![CDATA[delete from Orders where orderId= :orderId]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	orderId: attributes.queryParams.orderId
+}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="9e5eaa8e-5b82-4d36-96bb-4f7d113835aa">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"success": true,
+	"message": "Order deleted successfully"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="40f19efb-8f05-463b-8344-0072cfc89657" message="#[payload]"/>
+	</flow>
+	<flow name="fetchOrdersFlow" doc:id="d6ffc08b-e44f-4e5e-bde4-c06cf5017f36" >
+		<http:listener doc:name="Listener" doc:id="1171a279-3b2f-414e-8dcf-20835e7b7606" config-ref="HTTP_Listener_config" path="/fetchOrders"/>
+		<db:select doc:name="Select" doc:id="d5693c87-9f56-42c2-8f12-4999093afe4b" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from Orders]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="2ab3bd87-7982-411a-8d7e-4b437c547974">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

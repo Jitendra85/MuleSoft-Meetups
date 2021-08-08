@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="830b2995-21e3-4c98-948a-8fcf418d2861" basePath="${http.basepath}">
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="8f128b19-5ea2-4134-96db-724d1df525f5" >
+		<http:request-connection connectionIdleTimeout="${http.request.timeout}" >
+			<reconnection >
+				<reconnect frequency="${http.request.reconnection.frequency}" count="${http.request.reconnection.attempts}" />
+			</reconnection>
+		</http:request-connection>
+	</http:request-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="2b35ecc4-9af7-4b69-86e4-fd3f4bcc9795" file="properties\config_${env}.properties" />
+	<flow name="orderprocessingFlow" doc:id="5b44cf28-abea-4484-89a1-2a44d8066b8f" >
+		<http:listener doc:name="Listener" doc:id="bb9198c3-edf8-4af1-8101-5e9c3a5f6b47" config-ref="HTTP_Listener_config" path="/placeOrder"/>
+		<try doc:name="Try" doc:id="36c6a98d-51b4-4104-936d-c49b3e04d022" >
+			<http:request method="GET" doc:name="Save Tax" doc:id="e3a8c1b7-7f93-45e6-9ee1-12d68b07ec2a" config-ref="HTTP_Request_configuration" url="${taxService.saveTax.url}" />
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="95edb40b-fe24-48e4-86ff-266d59c6b711" >
+					<logger level="INFO" doc:name="Logger" doc:id="e0d8b1be-ae02-49c2-a3eb-dd79f36cd4d6" message="Tax Calculation Failed" />
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="Logger" doc:id="1942c00a-f609-4acc-b9ac-9e07b7792399" message="#[payload]"/>
+		<choice doc:name="Choice" doc:id="69588115-75d0-4bcc-abde-9ee3c9819424" >
+			<when expression="#[payload.success default false]">
+				<try doc:name="Try" doc:id="c23c38f3-ac6e-4ff2-828e-1ca301ecab91">
+			<http:request method="GET" doc:name="Submit Payment" doc:id="764a5ded-cb54-4c20-872d-64015082d9de" config-ref="HTTP_Request_configuration" url="${paymentService.payment.url}" />
+			<error-handler>
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="29ae4529-d5d3-4ef6-b719-fe16981a4cc5">
+							<flow-ref doc:name="cancelTaxFlow" doc:id="68989f32-415a-4e1c-8fb9-d04280666bf7" name="cancelTaxFlow"/>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+				<logger level="INFO" doc:name="Logger" doc:id="bc83cfdb-d68b-4cf8-9a66-4684f1c8dda5" message="#[payload]"/>
+				<choice doc:name="Choice" doc:id="1710d2ea-c5ab-4180-a99d-db38f10752fa" >
+					<when expression="#[payload.success default false]">
+						<try doc:name="Try" doc:id="a08d079d-e352-4a20-b844-629943435267" >
+							<http:request method="POST" doc:name="store order" doc:id="4e392ac0-5174-4059-a030-a106848e07f7" config-ref="HTTP_Request_configuration" url="${orderDatabaseService.createOrder.url}">
+								<http:body ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	orderId: randomInt(10) as Number,
+	orderName: "test"
+}]]]></http:body>
+							</http:request>
+							<error-handler >
+								<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="17410d33-c310-4575-bb13-cf73ee0689d3" >
+									<flow-ref doc:name="refundPaymentFlow" doc:id="b9d8865c-5f03-4c04-b2c3-9d280ece9c4a" name="refundPaymentFlow"/>
+									<flow-ref doc:name="cancelTaxFlow" doc:id="82c8886b-4f1e-40fc-b23c-760789bc2dbe" name="cancelTaxFlow"/>
+								</on-error-propagate>
+							</error-handler>
+						</try>
+						<logger level="INFO" doc:name="Logger" doc:id="1a3eb1ad-1bd3-4f1b-b9b2-f966efb548aa" message="#[payload]"/>
+						<choice doc:name="Choice" doc:id="97ecb560-5a3f-4bcd-9109-c0b0d30b9678" >
+							<when expression="#[!payload.success]">
+								<flow-ref doc:name="refundPaymentFlow" doc:id="37ba5eba-2f37-46ac-9689-0f2d25ad6f08" name="refundPaymentFlow" />
+								<flow-ref doc:name="cancelTaxFlow" doc:id="793ed11a-48a3-4369-8f29-672221734db7" name="cancelTaxFlow" />
+							</when>
+							<otherwise >
+								<ee:transform doc:name="Transform Message" doc:id="4f444ab6-8b33-42e2-a576-d4f841bc75f2" >
+									<ee:message >
+										<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+									</ee:message>
+								</ee:transform>
+							</otherwise>
+						</choice>
+					</when>
+					<otherwise >
+						<flow-ref doc:name="cancelTaxFlow" doc:id="f88c1f0a-2c42-47ba-9cad-3d1583542027" name="cancelTaxFlow"/>
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="9b0f66bd-a3b6-4e52-988a-35e134255a0e" message="Tax calculation failed"/>
+				<flow-ref doc:name="cancelTaxFlow" doc:id="1db4cde4-2b9b-481a-82a4-8574eb62ec1d" name="cancelTaxFlow"/>
+			</otherwise>
+		</choice>
+	</flow>
+	<sub-flow name="refundPaymentFlow" doc:id="e0144d40-b772-41f1-b87c-0392e3386b96" >
+		<try doc:name="Try" doc:id="fc53c316-a8aa-48af-a059-437f39455b02" >
+			<http:request method="GET" doc:name="Refund Payment" doc:id="f0c138b4-01a1-49e3-92ba-2062c02104f7" config-ref="HTTP_Request_configuration" url="${paymentService.cancelPayment.url}" />
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="bcb25d4d-0ea9-4507-8958-1b32684a464c" >
+					<logger level="INFO" doc:name="Logger" doc:id="b1ca2e81-4aad-40e2-8059-831dd26cc7d6" message="Payment refund failed" />
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="Logger" doc:id="ddcb7baa-9672-44de-a2de-5a255f551f68" message="#[payload]"/>
+	</sub-flow>
+	<sub-flow name="cancelTaxFlow" doc:id="8dc1179e-ea15-4ac6-8396-d88fa917fe26" >
+		<try doc:name="Try" doc:id="91ca055e-6491-42f3-8fd7-6a287d787377" >
+			<http:request method="GET" doc:name="Cancel tax" doc:id="47354ab8-fe76-4008-9a36-14eca5b8bbbd" config-ref="HTTP_Request_configuration" url="${taxService.cancelTax.url}" />
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="691d7777-3500-4bd7-b31a-1368d6815f75" >
+					<logger level="INFO" doc:name="Logger" doc:id="a031594c-9e52-4b1c-8bbf-b566ab7990b6" message="Tax cancellation failed" />
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="Logger" doc:id="e422ac46-d152-4712-ab13-19cfe6a22dac" message="#[payload]"/>
+	</sub-flow>
+</mule>

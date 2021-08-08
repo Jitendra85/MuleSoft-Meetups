@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a85563b3-f7b6-4469-bf4b-9e2def9a7bcc" basePath="${http.basepath}">
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="f2847a82-7f6c-4378-8222-64086e4112fe" file="properties\config_${env}.properties" />
+	<flow name="saveTaxFlow" doc:id="c1c182b6-0a7c-40a8-81ed-a70b6ba524b9" >
+		<http:listener doc:name="Listener" doc:id="e172583d-cab1-4aa6-ba25-54a084fbfb48" path="/calculateTax" config-ref="HTTP_Listener_config"/>
+		<choice doc:name="Choice" doc:id="2a8e7153-fd47-4ce1-886e-2f0b8a83fb84" >
+			<when expression="#[p('execution-flag')]">
+				<logger level="INFO" doc:name="Logger" doc:id="35b3f67b-3a8f-4aeb-99ac-2e0c63cc94c9" message="Tax calculated and saved" />
+				<ee:transform doc:name="Transform Message" doc:id="c1bb9529-4d15-490a-b208-54a608637c68">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"success": true,
+	"message": "Tax calculation saved"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="b95469c4-435c-41ac-8248-8aca28a07711" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"success": false,
+	"message": "Tax calculation failed"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="revokeTaxFlow" doc:id="b224ff63-c569-4848-86dc-e3c1b7105ccd" >
+		<http:listener doc:name="Listener" doc:id="f045810c-6de3-4c17-9f29-e78bf32d1d2e" path="/revokeTax" config-ref="HTTP_Listener_config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c1af4ac6-d6aa-4d2b-af14-74d1e30f4c99" message="Tax voided" />
+		<ee:transform doc:name="Transform Message" doc:id="9e5eaa8e-5b82-4d36-96bb-4f7d113835aa">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"success": true,
+	"message": "Tax voided"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
