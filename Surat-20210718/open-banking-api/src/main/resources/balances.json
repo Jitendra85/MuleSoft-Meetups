@@ -1,0 +1,22 @@
+[{
+"balanceType":"Credit Limit",
+"amount":"3434",
+"accountId":"1"
+},
+
+{
+"balanceType":"Available Balance",
+"amount":"31434",
+"accountId":"1"
+},
+{
+"balanceType":"Credit Limit",
+"amount":"34434",
+"accountId":"2"
+},
+
+{
+"balanceType":"Available Balance",
+"amount":"314434",
+"accountId":"2"
+}]

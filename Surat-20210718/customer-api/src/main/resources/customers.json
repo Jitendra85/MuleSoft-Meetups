@@ -1,0 +1,43 @@
+[
+{
+"customerId":"1",
+"firstName":"Jacky",
+"lastName":"Bafna",
+"address":"Oxford Circle",
+"age":"25",
+"country":"India"
+},
+{
+"customerId":"2",
+"firstName":"John",
+"lastName":"Jill",
+"address":"22 Oxford Circle",
+"age":"50",
+"country":"India"
+},
+{
+"customerId":"3",
+"firstName":"Jim",
+"lastName":"Jill",
+"address":"Oxford Circle",
+"age":"25",
+"country":"India"
+},
+{
+"customerId":"4",
+"firstName":"Jit",
+"lastName":"Jack",
+"address":"Oxford Circle",
+"age":"25",
+"country":"India"
+},
+{
+"customerId":"5",
+"firstName":"Jitendra",
+"lastName":"Bafna",
+"address":"10 Oxford Circle",
+"age":"26",
+"country":"India"
+}
+]
+

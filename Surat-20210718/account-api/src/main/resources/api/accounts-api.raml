@@ -1,0 +1,21 @@
+#%RAML 1.0
+title: Accounts API
+
+types:
+  accounts: !include data-types/accountDataType.raml
+
+/accounts:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: accounts[]
+  
+  /{accountId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: accounts

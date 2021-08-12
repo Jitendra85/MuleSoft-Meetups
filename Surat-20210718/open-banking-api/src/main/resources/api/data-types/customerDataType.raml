@@ -1,0 +1,45 @@
+#%RAML 1.0 DataType
+
+type:
+  properties:
+    customerId:
+      type: number
+      example: 45676
+    firstName:
+      type: string
+      example: "James"
+      minLength: 3
+      maxLength: 10
+    lastName:
+      type: string
+      example: "John"
+      minLength: 4
+      maxLength: 10
+    age:
+      type: number
+      example: 30
+      minimum: 10
+      maximum: 70
+    address:
+      type: string
+      example: "Oxford Street"
+    city:
+      type: string
+      example: "Mumbai"
+    state:
+      type: string
+      example: "Maharashtra"
+    country:
+      type: string
+      example: "India"
+    postalCode:
+      type: string
+      example: "455453"
+      minLength: 6
+      maxLength: 6
+    email:
+      type: string
+      example: "test@gmail.com"
+    phone:
+      type: string
+      example: "+91-3232323232"

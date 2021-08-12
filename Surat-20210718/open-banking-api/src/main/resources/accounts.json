@@ -1,0 +1,20 @@
+[{
+"id":"1",
+"firstName":"Jacky",
+"lastName":"Bafna",
+"address":"10 Oxford Street",
+"phone":"23322332",
+"website":"www.xyz.com",
+"company":"Self",
+"accountType":"Savings"
+},
+{
+"id":"2",
+"firstName":"Jitendra",
+"lastName":"Bafna",
+"address":"10 Oxford Street",
+"phone":"23322332",
+"website":"www.xyz.com",
+"company":"Self",
+"accountType":"Current"
+}]

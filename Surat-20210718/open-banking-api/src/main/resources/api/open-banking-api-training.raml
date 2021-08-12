@@ -1,0 +1,91 @@
+#%RAML 1.0
+title: Open Banking API Training
+
+protocols:
+  - HTTP
+  - HTTPS
+
+traits:
+  errorTraits: !include traits/errorTrait.raml
+  queryTraits: !include traits/accountsQueryParameterTrait.raml
+
+types:
+  accountType: !include data-types/accountsDataType.raml
+  balanceType: !include data-types/balancesDataType.raml
+  transactionType: !include data-types/transactionsDataType.raml
+  customerType: !include data-types/customerDataType.raml
+  
+
+/accounts:
+  description: List the account details for the customers
+  get:
+    is: [errorTraits,queryTraits]
+    responses:
+      200:
+        body:
+          application/json:
+            type: accountType[]
+
+  /{accountId}:
+    description: Fetch the single account details
+    get:
+      is: [errorTraits]
+      responses:
+        200:
+          body:
+            application/json:
+              type: accountType[]
+        
+
+
+    /balances:
+      description: Fetch the balance for the account
+      get:
+        is: [errorTraits]
+        responses:
+          200:
+            body:
+              application/json:
+                type: balanceType[]
+
+    /transactions:
+      description: Fetch the transactions
+      get:
+        is: [errorTraits]
+        queryParameters:
+          fromDate:
+            type: string
+            required: false
+            example: "2021-06-01"
+
+          toDate:
+            type: string
+            required: false
+            example: "2021-06-20"
+        responses:
+          200:
+            body:
+              application/json:
+                type: transactionType[]
+          
+
+      /{transactionId}:
+        description: Fetch the single transactions
+        get: 
+          is: [errorTraits]
+          responses:
+            200:
+              body:
+                application/json:
+                  type: transactionType[]
+
+/customers:
+  post:
+    body:
+      application/json:
+        type: customerType[]
+    responses:
+      200:
+        body:
+          application/json:
+
