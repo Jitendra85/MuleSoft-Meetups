@@ -5,7 +5,7 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
     <apikit:config name="accounts-api-config" api="accounts-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <api-gateway:autodiscovery apiId="17135044" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="e37b84b7-ea95-4ab5-80c1-b34bc3396f91" flowRef="accounts-api-main" />
+    <api-gateway:autodiscovery apiId="17519013" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="e37b84b7-ea95-4ab5-80c1-b34bc3396f91" flowRef="accounts-api-main" />
    
 	<flow name="accounts-api-main">
         <http:listener config-ref="accounts-api-httpListenerConfig" path="/api/*">

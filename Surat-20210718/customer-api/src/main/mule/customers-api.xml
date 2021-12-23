@@ -4,7 +4,7 @@
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
     <apikit:config name="customers-api-config" api="customers-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <api-gateway:autodiscovery apiId="17135046" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="fd9326f4-8c95-4eb7-bc83-0430896baad7" flowRef="customers-api-main" />
+    <api-gateway:autodiscovery apiId="17519012" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="fd9326f4-8c95-4eb7-bc83-0430896baad7" flowRef="customers-api-main" />
     <flow name="customers-api-main">
         <http:listener config-ref="customers-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">

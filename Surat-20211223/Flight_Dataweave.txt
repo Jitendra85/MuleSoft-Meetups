@@ -1,0 +1,32 @@
+%dw 2.0
+output application/flatfile schemaPath = "schemas/flightdetails.ffd"
+---
+{
+	RQH: {
+		"File Creation Date": now() as String {
+			format: "yyyyMMdd"
+		},
+		"File Creation Time": now() as String {
+			format: "HHmmss"
+		}
+	},
+	Batch: [{
+		BCH: {
+			"Flight Name": payload.Flights.FlightName,
+			Capacity: payload.Flights.Capacity as String,
+			Maker: payload.Flights.Maker,
+			Source: payload.Flights.Source,
+			Destination: payload.Flights.Destination
+		},
+		PSN: payload.Flights.Passengers.*Passenger map {
+			Name: $.Name,
+			Age: $.Age,
+			Class: $.Class,
+			"Seat Number": $.SeatNumber,
+			Cost: $.Cost
+		}
+	}],
+	RQF: {
+		"Total Passengers": sizeOf(payload.Flights.Passengers)
+	}
+}

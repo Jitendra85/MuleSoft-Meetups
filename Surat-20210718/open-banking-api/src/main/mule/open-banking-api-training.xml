@@ -4,7 +4,7 @@
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
     <apikit:config name="open-banking-api-training-config" api="open-banking-api-training.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <api-gateway:autodiscovery apiId="17135047" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="9fef1c8f-30fd-4684-bbb9-c6d15b781825" flowRef="open-banking-api-training-main" />
+    <api-gateway:autodiscovery apiId="17519011" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="9fef1c8f-30fd-4684-bbb9-c6d15b781825" flowRef="open-banking-api-training-main" />
     <flow name="open-banking-api-training-main">
         <http:listener config-ref="open-banking-api-training-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">

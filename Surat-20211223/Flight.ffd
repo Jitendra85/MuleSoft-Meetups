@@ -1,0 +1,47 @@
+form: FLATFILE
+structures:
+- id: 'BatchReq'
+  name: BatchRequest
+  data:
+  - {idRef: 'RQH'}
+  - groupId: 'Batch'
+    count: '>1'
+    items:
+    - {idRef: 'BCH'}
+    - {idRef: 'PSN', count: '>1'}
+  - {idRef: 'RQF'}
+
+segments:
+
+- id: 'RQH'
+  name: "Request File Header Record"
+  values:
+  - {name: "Record Type", type: String, length: 3, tagValue: 'RQH' }
+  - {name: "File Creation Date", type: String, length: 8 }
+  - {name: "File Creation Time", type: String, length: 6 }
+
+- id: 'BCH'
+  name: "Batch Header Record"
+  values:
+  - {name: "Record Type", type: String, length: 3, tagValue: 'BCH' }
+  - {name: "Flight Name", type: String, length: 20 }
+  - {name: "Capacity", type: String, length: 6 }
+  - {name: "Maker", type: String, length: 15 }
+  - {name: "Source", type: String, length: 10 }
+  - {name: "Destination", type: String, length: 10 }
+
+- id: 'PSN'
+  name: "Passenger Details"
+  values:
+  - {name: "Record Type", type: String, length: 3, tagValue: 'PSN' }
+  - {name: "Name", type: String, length: 20 }
+  - {name: "Age", type: String, length: 3 }
+  - {name: "Class", type: String, length: 10 }
+  - {name: "Seat Number", type: String, length: 3 }
+  - {name: "Cost", type: String, length: 10 }
+
+- id: 'RQF'
+  name: "Request File Footer Record"
+  values:
+  - {name: "Record Type", type: String, length: 3, tagValue: 'RQF' }
+  - {name: "Total Passengers", type: String, length: 5 }

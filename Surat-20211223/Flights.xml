@@ -1,0 +1,44 @@
+<Flights>
+<FlightName>Delta Air 900</FlightName>
+<Capacity>200</Capacity>
+<Maker>Air Bus</Maker>
+<Source>Mumbai</Source>
+<Destination>Delhi</Destination>
+<Passengers>
+<Passenger>
+<Name>Mr. Jack John</Name>
+<Age>43</Age>
+<Class>First</Class>
+<SeatNumber>1A</SeatNumber>
+<Cost>100000</Cost>
+</Passenger>
+<Passenger>
+<Name>Mr. James Adams</Name>
+<Age>32</Age>
+<Class>First</Class>
+<SeatNumber>2A</SeatNumber>
+<Cost>100000</Cost>
+</Passenger>
+<Passenger>
+<Name>Mr. Jit Jack</Name>
+<Age>43</Age>
+<Class>Second</Class>
+<SeatNumber>1B</SeatNumber>
+<Cost>500000</Cost>
+</Passenger>
+<Passenger>
+<Name>Mr. Jonty John</Name>
+<Age>43</Age>
+<Class>Second</Class>
+<SeatNumber>2B</SeatNumber>
+<Cost>500000</Cost>
+</Passenger>
+<Passenger>
+<Name>Mr. Ram Yadav</Name>
+<Age>33</Age>
+<Class>Second</Class>
+<SeatNumber>3C</SeatNumber>
+<Cost>50000</Cost>
+</Passenger>
+</Passengers>
+</Flights>
